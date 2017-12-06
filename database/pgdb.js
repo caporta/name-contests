@@ -1,3 +1,5 @@
+const humps = require('humps');
+
 module.exports = pgPool => {
   return {
     getUser(apiKey) {
@@ -5,7 +7,7 @@ module.exports = pgPool => {
         SELECT * FROM users
           WHERE api_key = $1
       `, [apiKey]).then(res => {
-        return res.rows[0];
+        return humps.camelizeKeys(res.rows[0]);
       });
     }
   };
