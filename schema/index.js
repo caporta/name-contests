@@ -5,6 +5,7 @@ const {
   GraphQLNonNull,
 } = require('graphql');
 
+const pgdb = require('../database/pgdb');
 const MeType = require('./types/me');
 
 // defines root selection scope
@@ -17,8 +18,9 @@ const RootQueryType = new GraphQLObjectType({
       args: {
         key: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: () => {
-        // read user info from db
+      resolve: (obj, args, ctx) => {
+        const { pgPool } = ctx;
+        return pgdb(pgPool).getUser(args.key);
       },
     },
   },
